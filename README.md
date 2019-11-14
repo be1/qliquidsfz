@@ -11,15 +11,19 @@ This program is a WIP, but it is functionnal.
 
 ## configuration
 in a terminal, type:
+
 $ cd qliquidsfz
+
 $ qmake -config release
 
 ## building
 in a terminal, inside the qliquidsfz directory, type:
+
 $ make
 
 ## installing
 in a terminal, inside the qliquidsfz directory, type:
+
 $ sudo make install
 
 ## running
