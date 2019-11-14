@@ -16,7 +16,7 @@ $ qmake -config release
 $ make
 
 ## installing
-$ make install
+$ sudo make install
 
 ## running
 $ qliquidsfz
