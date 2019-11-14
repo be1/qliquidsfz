@@ -123,7 +123,7 @@ void LiquidMainWindow::onCancelClicked()
     QFileInfo info(this->filename);
     ui->sfzFilelabel->setText(info.baseName());
 
-    ui->midiChannelSpinBox->setValue(this->channel);
+    ui->midiChannelSpinBox->setValue(this->channel +1);
 }
 
 void LiquidMainWindow::onCommitClicked()

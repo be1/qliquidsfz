@@ -10,22 +10,13 @@
     </message>
     <message>
         <location filename="liquidmainwindow.ui" line="54"/>
-        <source>none</source>
+        <source>(none)</source>
+        <oldsource>none</oldsource>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="liquidmainwindow.ui" line="61"/>
-        <source>synth name</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="liquidmainwindow.ui" line="68"/>
+        <location filename="liquidmainwindow.ui" line="132"/>
         <source>Cancel</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="liquidmainwindow.ui" line="75"/>
-        <source>sfz file</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -34,43 +25,42 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="liquidmainwindow.ui" line="102"/>
+        <location filename="liquidmainwindow.ui" line="74"/>
         <source>midi input channel</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="liquidmainwindow.ui" line="122"/>
+        <location filename="liquidmainwindow.ui" line="81"/>
         <source>Load...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="liquidmainwindow.ui" line="132"/>
-        <location filename="liquidmainwindow.ui" line="146"/>
-        <source>QLiquidSFZ</source>
+        <location filename="liquidmainwindow.ui" line="88"/>
+        <source>sfz filename</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="liquidmainwindow.ui" line="139"/>
-        <source>0</source>
+        <location filename="liquidmainwindow.ui" line="102"/>
+        <source>1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="liquidmainwindow.ui" line="177"/>
+        <location filename="liquidmainwindow.ui" line="163"/>
         <source>File</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="liquidmainwindow.ui" line="183"/>
+        <location filename="liquidmainwindow.ui" line="169"/>
         <source>Help</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="liquidmainwindow.ui" line="201"/>
+        <location filename="liquidmainwindow.ui" line="187"/>
         <source>Quit</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="liquidmainwindow.ui" line="206"/>
+        <location filename="liquidmainwindow.ui" line="192"/>
         <source>About</source>
         <translation type="unfinished"></translation>
     </message>
@@ -78,28 +68,28 @@
 <context>
     <name>QObject</name>
     <message>
-        <location filename="liquidmainwindow.cpp" line="29"/>
+        <location filename="liquidmainwindow.cpp" line="112"/>
         <source>Open SFZ</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="liquidmainwindow.cpp" line="29"/>
+        <location filename="liquidmainwindow.cpp" line="112"/>
         <source>SFZ Files (*.sfz)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="liquidmainwindow.cpp" line="39"/>
-        <location filename="liquidmainwindow.cpp" line="53"/>
+        <location filename="liquidmainwindow.cpp" line="122"/>
+        <location filename="liquidmainwindow.cpp" line="140"/>
         <source>Load...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="liquidmainwindow.cpp" line="70"/>
+        <location filename="liquidmainwindow.cpp" line="153"/>
         <source>About QLiquidSFZ</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="liquidmainwindow.cpp" line="70"/>
+        <location filename="liquidmainwindow.cpp" line="153"/>
         <source>QLiquidSFZ version </source>
         <translation type="unfinished"></translation>
     </message>
