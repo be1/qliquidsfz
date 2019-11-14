@@ -1,0 +1,15 @@
+[Desktop Entry]
+Encoding=UTF-8
+Name=QLiquidSFZ
+Name[fr]=QLiquidSFZ
+GenericName=SFZ audio sample player
+GenericName[fr]=Lecteur d'échantillons audio SFZ
+Comment=Loads and plays SFZ samples file description.
+Comment[fr]=Charge et joue les fichiers de description d'échantillons SFZ.
+Keywords=synth;audio;
+Keywords[fr]=synthétiseur;audio;
+Exec=qliquidsfz
+Icon=qliquidsfz
+Terminal=false
+Type=Application
+Categories=AudioVideo;
