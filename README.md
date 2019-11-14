@@ -10,15 +10,21 @@ This program is a WIP, but it is functionnal.
 - libsndfile devel files and libraries (needed by libliquidsfz)
 
 ## configuration
+in a terminal, type:
+$ cd qliquidsfz
 $ qmake -config release
 
 ## building
+in a terminal, inside the qliquidsfz directory, type:
 $ make
 
 ## installing
+in a terminal, inside the qliquidsfz directory, type:
 $ sudo make install
 
 ## running
+click on the newly created applications menu entry "QLiquidSFZ", or if you prefer, type in a terminal:
+
 $ qliquidsfz
 
 enjoy!
