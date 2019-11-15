@@ -89,9 +89,10 @@
         <translation>À propos de QLiquidSFZ</translation>
     </message>
     <message>
-        <location filename="liquidmainwindow.cpp" line="153"/>
-        <source>QLiquidSFZ version </source>
-        <translation type="unfinished"></translation>
+        <location filename="liquidmainwindow.cpp" line="178"/>
+        <location filename="liquidmainwindow.cpp" line="184"/>
+        <source>SFZ loaded</source>
+        <translation>SFZ chargé</translation>
     </message>
 </context>
 </TS>

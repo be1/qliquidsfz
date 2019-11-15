@@ -90,7 +90,14 @@
     </message>
     <message>
         <location filename="liquidmainwindow.cpp" line="153"/>
-        <source>QLiquidSFZ version </source>
+        <source>About QLiquidSFZ</source>
+        <oldsource>QLiquidSFZ version </oldsource>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="liquidmainwindow.cpp" line="178"/>
+        <location filename="liquidmainwindow.cpp" line="184"/>
+        <source>SFZ loaded</source>
         <translation type="unfinished"></translation>
     </message>
 </context>

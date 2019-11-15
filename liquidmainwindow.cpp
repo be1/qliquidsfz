@@ -72,6 +72,7 @@ LiquidMainWindow::LiquidMainWindow(QWidget *parent) :
 
 LiquidMainWindow::~LiquidMainWindow()
 {
+    jack_deactivate(this->jack_client);
     delete ui;
 }
 
@@ -150,11 +151,11 @@ void LiquidMainWindow::onCommitClicked()
 
 void LiquidMainWindow::onHelpAbout()
 {
-    QMessageBox::about(this, QObject::tr("About QLiquidSFZ"), QObject::tr("QLiquidSFZ version " VERSION "\n\n"
-                                                                          "This program is a GUI to libliquidsfz, an SFZ synth player.\n\n"
-                                                                          "This program is free software, Copyright (C) Benoit Rouits <brouits@free.fr> "
-                                                                          "and released under the GNU General Public Lisence version 3. It is delivered "
-                                                                           "AS IS in the hope it can be useful, but with no warranty of correctness"));
+    QMessageBox::about(this, QObject::tr("About QLiquidSFZ"), "QLiquidSFZ version " VERSION "\n\n"
+                                                              "This program is a GUI to the liquidsfz library, an SFZ synth player.\n\n"
+                                                              "This program is free software, Copyright (C) Benoit Rouits <brouits@free.fr> "
+                                                              "and released under the GNU General Public Lisence version 3. It is delivered "
+                                                              "AS IS in the hope it can be useful, but with no warranty of correctness.");
 }
 
 void LiquidMainWindow::onPipeMessage(int fd)
@@ -175,11 +176,11 @@ void LiquidMainWindow::onPipeMessage(int fd)
     this->ui->statusBar->showMessage(buf);
 
     if (this->loader->isFinished())
-        this->ui->statusBar->showMessage("SFZ loaded");
+        this->ui->statusBar->showMessage(QObject::tr("SFZ loaded"));
 }
 
 void LiquidMainWindow::onLoaderFinished()
 {
     this->loader->deleteLater();
-    this->ui->statusBar->showMessage("SFZ loaded");
+    this->ui->statusBar->showMessage(QObject::tr("SFZ loaded"));
 }
