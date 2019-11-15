@@ -23,6 +23,7 @@ public:
     ~LiquidMainWindow();
 
 signals:
+    void logEvent(const QString&);
     void handleNote(bool doHandle);
 
 protected:
@@ -35,6 +36,7 @@ protected slots:
     void onHelpAbout();
     void onLoaderFinished();
     void onHandleNote(bool on);
+    void onLogEvent(const QString& message);
 
 private:
     Ui::LiquidMainWindow *ui;

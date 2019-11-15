@@ -24,6 +24,26 @@ LiquidMainWindow::LiquidMainWindow(QWidget *parent) :
 {
     ui->setupUi(this);
 
+    this->synth.set_log_function([this](LiquidSFZ::Log level, const char *msg) {
+            QString message;
+            switch (level) {
+            case LiquidSFZ::Log::INFO: message.append("INFO: "); break;
+            case LiquidSFZ::Log::DEBUG: message.append("DEBUG: "); break;
+            case LiquidSFZ::Log::ERROR: message.append("ERROR: "); break;
+            case LiquidSFZ::Log::WARNING: message.append("WARNING: "); break;
+            default: break;
+            }
+            QString str(msg);
+            if (str.startsWith('/')) {
+                int usable = str.lastIndexOf('/');
+                str.remove(0, usable+1);
+            }
+            message.append(str);
+            emit logEvent(message);
+        });
+
+    this->synth.set_log_level(LiquidSFZ::Log::INFO);
+
     this->synth.set_progress_function([this](double percent) {
        int p = (int) percent;
        this->ui->statusBar->showMessage(QString::number(p) + "%");
@@ -34,6 +54,7 @@ LiquidMainWindow::LiquidMainWindow(QWidget *parent) :
     QObject::connect(ui->commitButton, SIGNAL(clicked()), this, SLOT(onCommitClicked()));
     QObject::connect(ui->actionAbout, SIGNAL(triggered()), this, SLOT(onHelpAbout()));
     QObject::connect(this, SIGNAL(handleNote(bool)), this, SLOT(onHandleNote(bool)));
+    QObject::connect(this, SIGNAL(logEvent(const QString&)), this, SLOT(onLogEvent(const QString&)));
 
     jack_status_t jack_status;
     this->jack_client = jack_client_open ("qliquidsfz", JackNullOption, &jack_status, NULL);
@@ -122,7 +143,7 @@ void LiquidMainWindow::onCancelClicked()
 {
     ui->sfzLoadButton->setText(QObject::tr("Load..."));
     QFileInfo info(this->filename);
-    ui->sfzFilelabel->setText(info.baseName());
+    ui->sfzFileLabel->setText(info.baseName());
 
     ui->midiChannelSpinBox->setValue(this->channel +1);
 }
@@ -140,7 +161,7 @@ void LiquidMainWindow::onCommitClicked()
 
         ui->sfzLoadButton->setText(QObject::tr("Load..."));
         QFileInfo info(this->filename);
-        ui->sfzFilelabel->setText(info.baseName());
+        ui->sfzFileLabel->setText(info.baseName());
     }
 
     if (this->channel != (ui->midiChannelSpinBox->value() - 1)) {
@@ -170,4 +191,9 @@ void LiquidMainWindow::onHandleNote(bool doHandle)
         this->ui->midiChannelLabel->setText("<font color=\"black\">" + QString::number(this->channel +1) + "</font>");
     else
         this->ui->midiChannelLabel->setText("<font color=\"red\">" + QString::number(this->channel + 1) + "</font>");
+}
+
+void LiquidMainWindow::onLogEvent(const QString &message)
+{
+    this->ui->logTextEdit->appendPlainText(message);
 }
