@@ -1,32 +1,32 @@
 # QLiquidSFZ
 Qt graphical user interface to the liquidsfz library, an SFZ synth player.
 
-## status
+## Status
 This program is a WIP, but it is functionnal.
 
-## prerequisites install
+## Prerequisites install
 - Qt5 devel files and libraries
 - libliquidsfz from the liquidsfz project (available on https://github.com/swesterfeld/liquidsfz)
 - libsndfile devel files and libraries (needed by libliquidsfz)
 
-## configuration
+## Configuring
 in a terminal, type:
 
 $ cd qliquidsfz
 
 $ qmake -config release
 
-## building
+## Building
 in a terminal, inside the qliquidsfz directory, type:
 
 $ make
 
-## installing
+## Installing
 in a terminal, inside the qliquidsfz directory, type:
 
 $ sudo make install
 
-## running
+## Running
 click on the newly created applications menu entry "QLiquidSFZ", or if you prefer, type in a terminal:
 
 $ qliquidsfz
