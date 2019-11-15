@@ -33,7 +33,6 @@ protected slots:
     void onCancelClicked();
     void onCommitClicked();
     void onHelpAbout();
-    void onPipeMessage(int);
     void onLoaderFinished();
     void onHandleNote(bool on);
 

@@ -24,13 +24,10 @@ LiquidMainWindow::LiquidMainWindow(QWidget *parent) :
 {
     ui->setupUi(this);
 
-    int pipeEnds[2];
-    ::pipe(pipeEnds);
-    ::dup2(pipeEnds[1], STDOUT_FILENO);
-    ::close(pipeEnds[1]);
-
-    QSocketNotifier* socketNotifier = new QSocketNotifier(pipeEnds[0], QSocketNotifier::Read, this);
-    QObject::connect(socketNotifier, SIGNAL(activated(int)), this, SLOT(onPipeMessage(int)));
+    this->synth.set_progress_function([this](double percent) {
+       int p = (int) percent;
+       this->ui->statusBar->showMessage(QString::number(p) + "%");
+    });
 
     QObject::connect(ui->sfzLoadButton, SIGNAL(clicked()), this, SLOT(onLoadClicked()));
     QObject::connect(ui->cancelButton, SIGNAL(clicked()), this, SLOT(onCancelClicked()));
@@ -159,27 +156,6 @@ void LiquidMainWindow::onHelpAbout()
                                                               "This program is free software, Copyright (C) Benoit Rouits <brouits@free.fr> "
                                                               "and released under the GNU General Public Lisence version 3. It is delivered "
                                                               "AS IS in the hope it can be useful, but with no warranty of correctness.");
-}
-
-void LiquidMainWindow::onPipeMessage(int fd)
-{
-    size_t bytes = 0;
-    if (::ioctl(fd, FIONREAD, &bytes) == -1)
-        return;
-
-    if (!bytes)
-        return;
-
-    char buf[bytes +1];
-    ssize_t r = ::read(fd, buf, bytes);
-    if (r < 0)
-        return;
-
-    buf[r] = '\0';
-    this->ui->statusBar->showMessage(buf);
-
-    if (this->loader->isFinished())
-        this->ui->statusBar->showMessage(QObject::tr("SFZ loaded"));
 }
 
 void LiquidMainWindow::onLoaderFinished()
