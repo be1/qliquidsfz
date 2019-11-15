@@ -51,10 +51,8 @@ LiquidMainWindow::LiquidMainWindow(QWidget *parent) :
         this->ui->statusBar->showMessage("JACK server started");
     }
 
-    if (jack_status & JackNameNotUnique) {
-        char* name = jack_get_client_name(this->jack_client);
-        this->setWindowTitle(QString(name));
-    }
+    char* name = jack_get_client_name(this->jack_client);
+    this->setWindowTitle(QString(name));
 
     this->synth.set_sample_rate(jack_get_sample_rate(this->jack_client));
 
