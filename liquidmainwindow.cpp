@@ -36,6 +36,7 @@ LiquidMainWindow::LiquidMainWindow(QWidget *parent) :
     QObject::connect(ui->cancelButton, SIGNAL(clicked()), this, SLOT(onCancelClicked()));
     QObject::connect(ui->commitButton, SIGNAL(clicked()), this, SLOT(onCommitClicked()));
     QObject::connect(ui->actionAbout, SIGNAL(triggered()), this, SLOT(onHelpAbout()));
+    QObject::connect(this, SIGNAL(handleNote(bool)), this, SLOT(onHandleNote(bool)));
 
     jack_status_t jack_status;
     this->jack_client = jack_client_open ("qliquidsfz", JackNullOption, &jack_status, NULL);
@@ -84,13 +85,17 @@ int LiquidMainWindow::process(jack_nframes_t nframes)
         jack_midi_event_get (&in_event, port_buf, event_index);
         if (in_event.size == 3) {
             int channel = in_event.buffer[0] & 0x0f;
-            if (channel && this->channel && (channel != this->channel))
+            if (channel && this->channel && (channel != this->channel)) {
+                emit handleNote(false);
                 continue;
+            }
 
             switch (in_event.buffer[0] & 0xf0) {
                 case 0x90: synth.add_event_note_on (in_event.time, channel, in_event.buffer[1], in_event.buffer[2]);
+                           emit handleNote(true);
                            break;
                 case 0x80: synth.add_event_note_off (in_event.time, channel, in_event.buffer[1]);
+                           emit handleNote(false);
                            break;
                 case 0xb0: synth.add_event_cc (in_event.time, channel, in_event.buffer[1], in_event.buffer[2]);
                            break;
@@ -181,4 +186,12 @@ void LiquidMainWindow::onLoaderFinished()
 {
     this->loader->deleteLater();
     this->ui->statusBar->showMessage(QObject::tr("SFZ loaded"));
+}
+
+void LiquidMainWindow::onHandleNote(bool doHandle)
+{
+    if (!doHandle)
+        this->ui->midiChannelLabel->setText("<font color=\"black\">" + QString::number(this->channel +1) + "</font>");
+    else
+        this->ui->midiChannelLabel->setText("<font color=\"red\">" + QString::number(this->channel + 1) + "</font>");
 }

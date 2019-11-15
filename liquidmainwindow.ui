@@ -89,7 +89,7 @@
      <item row="1" column="1">
       <widget class="QLabel" name="midiChannelLabel">
        <property name="text">
-        <string>1</string>
+        <string notr="true">&lt;font color=&quot;black&quot;&gt;1&lt;/font&gt;</string>
        </property>
       </widget>
      </item>

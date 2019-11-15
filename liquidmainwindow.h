@@ -22,6 +22,9 @@ public:
     explicit LiquidMainWindow(QWidget *parent = nullptr);
     ~LiquidMainWindow();
 
+signals:
+    void handleNote(bool doHandle);
+
 protected:
     int process(jack_nframes_t nframes);
 
@@ -32,6 +35,7 @@ protected slots:
     void onHelpAbout();
     void onPipeMessage(int);
     void onLoaderFinished();
+    void onHandleNote(bool on);
 
 private:
     Ui::LiquidMainWindow *ui;
