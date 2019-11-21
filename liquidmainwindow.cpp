@@ -103,7 +103,8 @@ int LiquidMainWindow::process(jack_nframes_t nframes)
         jack_midi_event_get (&in_event, port_buf, event_index);
         if (in_event.size == 3) {
             int channel = in_event.buffer[0] & 0x0f;
-            if (channel && this->channel && (channel != this->channel)) {
+	    /* filter out channels that aren't mine (but keep omni) */
+            if (this->channel && (channel != this->channel)) {
                 emit handleNote(false);
                 continue;
             }
