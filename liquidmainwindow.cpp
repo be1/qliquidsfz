@@ -45,8 +45,7 @@ LiquidMainWindow::LiquidMainWindow(QWidget *parent) :
     this->synth.set_log_level(LiquidSFZ::Log::INFO);
 
     this->synth.set_progress_function([this](double percent) {
-       int p = (int) percent;
-       this->ui->statusBar->showMessage(QString::number(p) + "%");
+        emit progressEvent((int)percent);
     });
 
     QObject::connect(ui->sfzLoadButton, SIGNAL(clicked()), this, SLOT(onLoadClicked()));
@@ -55,6 +54,7 @@ LiquidMainWindow::LiquidMainWindow(QWidget *parent) :
     QObject::connect(ui->actionAbout, SIGNAL(triggered()), this, SLOT(onHelpAbout()));
     QObject::connect(this, SIGNAL(handleNote(bool)), this, SLOT(onHandleNote(bool)));
     QObject::connect(this, SIGNAL(logEvent(const QString&)), this, SLOT(onLogEvent(const QString&)));
+    QObject::connect(this, SIGNAL(progressEvent(int)), this, SLOT(onProgressEvent(int)));
 
     jack_status_t jack_status;
     this->jack_client = jack_client_open ("qliquidsfz", JackNullOption, &jack_status, NULL);
@@ -197,4 +197,9 @@ void LiquidMainWindow::onHandleNote(bool doHandle)
 void LiquidMainWindow::onLogEvent(const QString &message)
 {
     this->ui->logTextEdit->appendPlainText(message);
+}
+
+void LiquidMainWindow::onProgressEvent(int progress)
+{
+    this->ui->statusBar->showMessage(QString::number(progress) + "%");
 }

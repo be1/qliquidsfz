@@ -24,6 +24,7 @@ public:
 
 signals:
     void logEvent(const QString&);
+    void progressEvent(int percent);
     void handleNote(bool doHandle);
 
 protected:
@@ -37,6 +38,7 @@ protected slots:
     void onLoaderFinished();
     void onHandleNote(bool on);
     void onLogEvent(const QString& message);
+    void onProgressEvent(int progress);
 
 private:
     Ui::LiquidMainWindow *ui;
