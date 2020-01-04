@@ -97,14 +97,11 @@ LiquidMainWindow::~LiquidMainWindow()
 int LiquidMainWindow::process(jack_nframes_t nframes)
 {
     if (!this->mutex.tryLock()) {
-        // The sfz loader thread is working. So, silence the synth with zeroes.
-        float *l = (float*) alloca(nframes * sizeof (float));
-        float *r = (float*) alloca(nframes * sizeof (float));
+        // The sfz loader thread is working. So, silence output with zeroes.
+        float *l = (float*) jack_port_get_buffer (this->jack_audio_l, nframes);
+        float *r = (float*) jack_port_get_buffer (this->jack_audio_r, nframes);
         memset(l, 0, nframes * sizeof (float));
         memset(r, 0, nframes * sizeof (float));
-
-        float *outputs[2] = {l, r};
-        synth.process (outputs, nframes);
         return 0;
     }
 
