@@ -3,13 +3,14 @@
 
 #include <QObject>
 #include <QThread>
+#include <QMutex>
 #include <liquidsfz.hh>
 
 class SFZLoader : public QThread
 {
     Q_OBJECT
 public:
-    explicit SFZLoader(LiquidSFZ::Synth* synth, QObject *parent = nullptr);
+    explicit SFZLoader(LiquidSFZ::Synth* synth, QMutex *mutex, QObject *parent = nullptr);
     void setSFZ(const QString& filename);
 
 protected:
@@ -18,6 +19,7 @@ protected:
 private:
     LiquidSFZ::Synth* synth;
     QString filename;
+    QMutex* mutex;
 };
 
 #endif // SFZLOADER_H

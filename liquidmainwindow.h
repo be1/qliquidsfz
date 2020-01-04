@@ -45,6 +45,7 @@ private:
     QString filename;
     QString pendingFilename;
     qint8 channel;
+    QMutex mutex;
     LiquidSFZ::Synth synth;
     SFZLoader* loader;
 

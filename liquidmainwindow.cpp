@@ -8,6 +8,7 @@
 #include <jack/jack.h>
 #include <unistd.h>
 #include <sys/ioctl.h>
+#include <alloca.h>
 #include "config.h"
 
 LiquidMainWindow::LiquidMainWindow(QWidget *parent) :
@@ -95,6 +96,18 @@ LiquidMainWindow::~LiquidMainWindow()
 
 int LiquidMainWindow::process(jack_nframes_t nframes)
 {
+    if (!this->mutex.tryLock()) {
+        // The sfz loader thread is working. So, silence the synth with zeroes.
+        float *l = (float*) alloca(nframes * sizeof (float));
+        float *r = (float*) alloca(nframes * sizeof (float));
+        memset(l, 0, nframes * sizeof (float));
+        memset(r, 0, nframes * sizeof (float));
+
+        float *outputs[2] = {l, r};
+        synth.process (outputs, nframes);
+        return 0;
+    }
+
     void* port_buf = jack_port_get_buffer (this->jack_midi_in, nframes);
     jack_nframes_t event_count = jack_midi_get_event_count (port_buf);
 
@@ -103,7 +116,7 @@ int LiquidMainWindow::process(jack_nframes_t nframes)
         jack_midi_event_get (&in_event, port_buf, event_index);
         if (in_event.size == 3) {
             int channel = in_event.buffer[0] & 0x0f;
-	    /* filter out channels that aren't mine (but keep omni) */
+            /* filter out channels that aren't mine (but keep omni) */
             if (this->channel && (channel != this->channel)) {
                 emit handleNote(false);
                 continue;
@@ -127,6 +140,7 @@ int LiquidMainWindow::process(jack_nframes_t nframes)
           (float *) jack_port_get_buffer (this->jack_audio_r, nframes)
       };
       synth.process (outputs, nframes);
+      this->mutex.unlock();
       return 0;
 }
 
@@ -153,7 +167,7 @@ void LiquidMainWindow::onCommitClicked()
 {
     // load SFZ file in a separate thread.
     if (this->filename != this->pendingFilename) {
-        this->loader = new SFZLoader(&this->synth, this);
+        this->loader = new SFZLoader(&this->synth, &this->mutex, this);
         QObject::connect(this->loader, SIGNAL(finished()), this, SLOT(onLoaderFinished()));
 
         this->filename = this->pendingFilename;
@@ -165,6 +179,7 @@ void LiquidMainWindow::onCommitClicked()
         ui->sfzFileLabel->setText(info.baseName());
     }
 
+    // update channel number label
     if (this->channel != (ui->midiChannelSpinBox->value() - 1)) {
         this->channel = (qint8) ui->midiChannelSpinBox->value() -1;
         ui->midiChannelLabel->setText(QString::number(ui->midiChannelSpinBox->value()));
