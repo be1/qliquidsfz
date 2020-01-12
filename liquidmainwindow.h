@@ -39,6 +39,7 @@ protected slots:
     void onHandleNote(bool on);
     void onLogEvent(const QString& message);
     void onProgressEvent(int progress);
+    void onGainValueChanged(int val);
 
 private:
     Ui::LiquidMainWindow *ui;

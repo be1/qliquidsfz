@@ -4,6 +4,7 @@
 #include <QFileDialog>
 #include <QMessageBox>
 #include <QSocketNotifier>
+#include <QDebug>
 #include <liquidsfz.hh>
 #include <jack/jack.h>
 #include <unistd.h>
@@ -56,6 +57,7 @@ LiquidMainWindow::LiquidMainWindow(QWidget *parent) :
     QObject::connect(this, SIGNAL(handleNote(bool)), this, SLOT(onHandleNote(bool)));
     QObject::connect(this, SIGNAL(logEvent(const QString&)), this, SLOT(onLogEvent(const QString&)));
     QObject::connect(this, SIGNAL(progressEvent(int)), this, SLOT(onProgressEvent(int)));
+    QObject::connect(ui->gainSlider, SIGNAL(valueChanged(int)), this, SLOT(onGainValueChanged(int)));
 
     jack_status_t jack_status;
     this->jack_client = jack_client_open ("qliquidsfz", JackNullOption, &jack_status, NULL);
@@ -128,6 +130,8 @@ int LiquidMainWindow::process(jack_nframes_t nframes)
                            break;
                 case 0xb0: synth.add_event_cc (in_event.time, channel, in_event.buffer[1], in_event.buffer[2]);
                            break;
+                case 0xe0: synth.add_event_pitch_bend (in_event.time, channel, in_event.buffer[1] + 128 * in_event.buffer[2]);
+                           break;
               }
           }
       }
@@ -162,6 +166,9 @@ void LiquidMainWindow::onCancelClicked()
 
 void LiquidMainWindow::onCommitClicked()
 {
+    // clear log area
+    ui->logTextEdit->clear();
+
     // load SFZ file in a separate thread.
     if (this->filename != this->pendingFilename) {
         this->loader = new SFZLoader(&this->synth, &this->mutex, this);
@@ -196,6 +203,23 @@ void LiquidMainWindow::onLoaderFinished()
 {
     this->loader->deleteLater();
     this->ui->statusBar->showMessage(QObject::tr("SFZ loaded"));
+
+    QString message;
+    auto ccs = synth.list_ccs();
+    if (ccs.size()) {
+        qDebug() << ccs.size() << "ccs";
+        for (const auto& cc_info : ccs) {
+            message.sprintf(" • CC #%d", cc_info.cc());
+            if (cc_info.has_label()) {
+                message.append(" - ");
+                message.append(cc_info.label().c_str());
+                message.append("[default: ");
+                message.append(QString::number(cc_info.default_value()));
+                message.append("]\n");
+            }
+            emit logEvent(message);
+        }
+    }
 }
 
 void LiquidMainWindow::onHandleNote(bool doHandle)
@@ -214,4 +238,9 @@ void LiquidMainWindow::onLogEvent(const QString &message)
 void LiquidMainWindow::onProgressEvent(int progress)
 {
     this->ui->statusBar->showMessage(QString::number(progress) + "%");
+}
+
+void LiquidMainWindow::onGainValueChanged(int val)
+{
+    synth.set_gain((float)val / 100.0);
 }
