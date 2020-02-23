@@ -22,7 +22,9 @@ LiquidMainWindow::LiquidMainWindow(QWidget *parent) :
     jack_client(nullptr),
     jack_midi_in(nullptr),
     jack_audio_l(nullptr),
-    jack_audio_r(nullptr)
+    jack_audio_r(nullptr),
+    gain(1.0),
+    _gain(1.0)
 {
     ui->setupUi(this);
 
@@ -84,6 +86,12 @@ LiquidMainWindow::LiquidMainWindow(QWidget *parent) :
 
     jack_set_process_callback(this->jack_client, [](jack_nframes_t nframes, void* arg) {
         auto self = static_cast<LiquidMainWindow *>(arg);
+
+        if (self->gain != self->_gain) {
+            self->synth.set_gain(self->_gain);
+            self->gain = self->_gain;
+        }
+
         return self->process(nframes);
     }, this);
 
@@ -242,5 +250,5 @@ void LiquidMainWindow::onProgressEvent(int progress)
 
 void LiquidMainWindow::onGainValueChanged(int val)
 {
-    synth.set_gain((float)val / 100.0);
+    this->_gain = (float)val / 100.0;
 }
