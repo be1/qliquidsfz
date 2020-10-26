@@ -21,6 +21,7 @@ class LiquidMainWindow : public QMainWindow
 public:
     explicit LiquidMainWindow(QWidget *parent = nullptr);
     ~LiquidMainWindow();
+    void loadFile(const QString& filename);
 
 signals:
     void logEvent(const QString&);

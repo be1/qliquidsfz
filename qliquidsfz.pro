@@ -8,9 +8,12 @@ QT        += core gui
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
-VERSION = 0.1.2
+VERSION = 0.1.3
+REVISION = $$system(svnversion|grep '[[:digit:]]' || git rev-parse --short HEAD)
 TARGET = qliquidsfz
 TEMPLATE = app
+
+CONFIG(release, debug|release):DEFINES += QT_NO_DEBUG_OUTPUT
 
 unix {
     CONFIG += link_pkgconfig

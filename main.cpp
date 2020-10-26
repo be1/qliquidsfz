@@ -3,6 +3,7 @@
 #include <QTranslator>
 #include <QLibraryInfo>
 #include <QFileInfo>
+#include <QCommandLineParser>
 #include "config.h"
 
 int main(int argc, char *argv[])
@@ -11,6 +12,7 @@ int main(int argc, char *argv[])
     a.setOrganizationName("Herewe");
     a.setOrganizationDomain("Servebeer");
     a.setApplicationName("QLiquidSFZ");
+    a.setApplicationVersion(VERSION " (r" REVISION ")");
 
     QString locale = QLocale::system().name();
     QTranslator qtTranslator;
@@ -22,6 +24,16 @@ int main(int argc, char *argv[])
     if (!qliquidsfzTranslator.load(TARGET "_" + locale, "locale"))
         qliquidsfzTranslator.load(TARGET "_" + locale, DATADIR "/" TARGET "/locale" );
     a.installTranslator(&qliquidsfzTranslator);
+
+
+    QCommandLineParser parser;
+    parser.setApplicationDescription("Simple LiquidSFZ synthesizer GUI.");
+    parser.addHelpOption();
+    parser.addVersionOption();
+    parser.addPositionalArgument("sfz", QCoreApplication::translate("main", "SFZ file to load."));
+
+    parser.process(a);
+    const QStringList args = parser.positionalArguments();
 
     LiquidMainWindow w;
     QString iconpath = QString(DATADIR "/pixmaps/" TARGET ".png");
@@ -35,6 +47,9 @@ int main(int argc, char *argv[])
         w.setWindowIcon(QIcon(TARGET ".png"));
 
     w.show();
+
+    if (args.length() > 0)
+        w.loadFile(args.at(0));
 
     return a.exec();
 }

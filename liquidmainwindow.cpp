@@ -104,6 +104,14 @@ LiquidMainWindow::~LiquidMainWindow()
     delete ui;
 }
 
+void LiquidMainWindow::loadFile(const QString &filename)
+{
+    this->pendingFilename = filename;
+    QFileInfo info(filename);
+    ui->sfzLoadButton->setText(info.baseName());
+    onCommitClicked();
+}
+
 int LiquidMainWindow::process(jack_nframes_t nframes)
 {
     if (!this->mutex.tryLock()) {

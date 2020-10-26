@@ -3,5 +3,6 @@
 #define TARGET \"$$TARGET\"
 #define PREFIX \"$$PREFIX\"
 #define VERSION \"$$VERSION\"
+#define REVISION \"$$REVISION\"
 #define DATADIR \"$$DATADIR\"
 #endif
