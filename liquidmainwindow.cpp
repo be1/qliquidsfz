@@ -225,7 +225,8 @@ void LiquidMainWindow::onLoaderFinished()
     if (ccs.size()) {
         qDebug() << ccs.size() << "ccs";
         for (const auto& cc_info : ccs) {
-            message.sprintf(" • CC #%d", cc_info.cc());
+            message.append(" • CC #%d");
+            message = message.arg(cc_info.cc());
             if (cc_info.has_label()) {
                 message.append(" - ");
                 message.append(cc_info.label().c_str());
