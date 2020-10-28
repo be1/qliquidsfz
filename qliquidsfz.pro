@@ -61,12 +61,15 @@ unix {
     desktop.path = $$DATADIR/applications
     desktop.files = $${TARGET}.desktop
     icon.path = $$DATADIR/pixmaps
-    icon.files = qliquidsfz.png
+    icon.files = $${TARGET}.png
+    mime.path = $$DATADIR/mime/packages
+    mime.files = application-x-$${TARGET}.xml
     INSTALLS += target \
+            icon \
             manual \
             translations \
             desktop \
-            icon
+            mime
 }
 
 

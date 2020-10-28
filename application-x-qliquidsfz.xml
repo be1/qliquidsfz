@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mime-info xmlns="http://www.freedesktop.org/standards/shared-mime-info">
+   <mime-type type="application/x-sfz">
+     <icon name="qliquidsfz"/>
+     <comment>SFZ sound font description</comment>
+     <comment xml:lang="fr">Description d'instrument SFZ</comment>
+     <glob pattern="*.sfz"/>
+   </mime-type>
+</mime-info>
