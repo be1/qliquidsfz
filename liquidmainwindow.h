@@ -33,7 +33,8 @@ protected:
 
 protected slots:
     void onLoadClicked();
-    void onCommitClicked();
+    void onCommitChan();
+    void onCommitLoad();
     void onHelpAbout();
     void onLoaderFinished();
     void onHandleNote(bool on);

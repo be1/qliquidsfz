@@ -53,7 +53,7 @@ LiquidMainWindow::LiquidMainWindow(QWidget *parent) :
     });
 
     QObject::connect(ui->sfzLoadButton, &QPushButton::clicked, this, &LiquidMainWindow::onLoadClicked);
-    QObject::connect(ui->midiChannelSpinBox, &QSpinBox::textChanged, this, &LiquidMainWindow::onCommitClicked);
+    QObject::connect(ui->midiChannelSpinBox, &QSpinBox::textChanged, this, &LiquidMainWindow::onCommitChan);
     QObject::connect(ui->actionAbout, &QAction::triggered, this, &LiquidMainWindow::onHelpAbout);
     QObject::connect(this, &LiquidMainWindow::handleNote, this, &LiquidMainWindow::onHandleNote);
     QObject::connect(this, &LiquidMainWindow::logEvent, this, &LiquidMainWindow::onLogEvent);
@@ -108,7 +108,7 @@ void LiquidMainWindow::loadFile(const QString &filename)
     this->pendingFilename = filename;
     QFileInfo info(filename);
     ui->sfzLoadButton->setText(info.baseName());
-    onCommitClicked();
+    onCommitLoad();
 }
 
 int LiquidMainWindow::process(jack_nframes_t nframes)
@@ -167,18 +167,27 @@ void LiquidMainWindow::onLoadClicked()
         return;
 
     QFileInfo info(this->pendingFilename);
-    ui->sfzLoadButton->setText(info.baseName());
-    ui->sfzLoadButton->setEnabled(false);
-    onCommitClicked();
+    //ui->sfzLoadButton->setText(info.baseName());
+    onCommitLoad();
 }
 
-void LiquidMainWindow::onCommitClicked()
+void LiquidMainWindow::onCommitChan()
+{
+    // update channel number label
+    if (this->channel != (ui->midiChannelSpinBox->value() - 1)) {
+        this->channel = (qint8) ui->midiChannelSpinBox->value() -1;
+        ui->midiChannelLabel->setText(QString::number(ui->midiChannelSpinBox->value()));
+    }
+}
+
+void LiquidMainWindow::onCommitLoad()
 {
     // clear log area
     ui->logTextEdit->clear();
 
     // load SFZ file in a separate thread.
     if (this->filename != this->pendingFilename) {
+        ui->sfzLoadButton->setEnabled(false);
         this->loader = new SFZLoader(&this->synth, &this->mutex, this);
         QObject::connect(this->loader, SIGNAL(finished()), this, SLOT(onLoaderFinished()));
 
@@ -189,12 +198,6 @@ void LiquidMainWindow::onCommitClicked()
         ui->sfzLoadButton->setText(QObject::tr("Load..."));
         QFileInfo info(this->filename);
         ui->sfzFileLabel->setText(info.baseName());
-    }
-
-    // update channel number label
-    if (this->channel != (ui->midiChannelSpinBox->value() - 1)) {
-        this->channel = (qint8) ui->midiChannelSpinBox->value() -1;
-        ui->midiChannelLabel->setText(QString::number(ui->midiChannelSpinBox->value()));
     }
 }
 
