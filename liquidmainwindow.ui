@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>420</width>
+    <width>427</width>
     <height>291</height>
    </rect>
   </property>
@@ -43,7 +43,7 @@
      <rect>
       <x>10</x>
       <y>0</y>
-      <width>401</width>
+      <width>411</width>
       <height>221</height>
      </rect>
     </property>
@@ -139,22 +139,7 @@
         </widget>
        </item>
        <item>
-        <layout class="QHBoxLayout" name="horizontalLayout_3">
-         <item>
-          <widget class="QPushButton" name="cancelButton">
-           <property name="text">
-            <string>Cancel</string>
-           </property>
-          </widget>
-         </item>
-         <item>
-          <widget class="QPushButton" name="commitButton">
-           <property name="text">
-            <string>Commit</string>
-           </property>
-          </widget>
-         </item>
-        </layout>
+        <layout class="QHBoxLayout" name="horizontalLayout_3"/>
        </item>
       </layout>
      </item>
@@ -166,7 +151,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>420</width>
+     <width>427</width>
      <height>31</height>
     </rect>
    </property>

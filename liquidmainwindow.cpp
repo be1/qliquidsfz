@@ -52,14 +52,13 @@ LiquidMainWindow::LiquidMainWindow(QWidget *parent) :
         emit progressEvent((int)percent);
     });
 
-    QObject::connect(ui->sfzLoadButton, SIGNAL(clicked()), this, SLOT(onLoadClicked()));
-    QObject::connect(ui->cancelButton, SIGNAL(clicked()), this, SLOT(onCancelClicked()));
-    QObject::connect(ui->commitButton, SIGNAL(clicked()), this, SLOT(onCommitClicked()));
-    QObject::connect(ui->actionAbout, SIGNAL(triggered()), this, SLOT(onHelpAbout()));
-    QObject::connect(this, SIGNAL(handleNote(bool)), this, SLOT(onHandleNote(bool)));
-    QObject::connect(this, SIGNAL(logEvent(QString)), this, SLOT(onLogEvent(QString)));
-    QObject::connect(this, SIGNAL(progressEvent(int)), this, SLOT(onProgressEvent(int)));
-    QObject::connect(ui->gainSlider, SIGNAL(valueChanged(int)), this, SLOT(onGainValueChanged(int)));
+    QObject::connect(ui->sfzLoadButton, &QPushButton::clicked, this, &LiquidMainWindow::onLoadClicked);
+    QObject::connect(ui->midiChannelSpinBox, &QSpinBox::textChanged, this, &LiquidMainWindow::onCommitClicked);
+    QObject::connect(ui->actionAbout, &QAction::triggered, this, &LiquidMainWindow::onHelpAbout);
+    QObject::connect(this, &LiquidMainWindow::handleNote, this, &LiquidMainWindow::onHandleNote);
+    QObject::connect(this, &LiquidMainWindow::logEvent, this, &LiquidMainWindow::onLogEvent);
+    QObject::connect(this, &LiquidMainWindow::progressEvent, this, &LiquidMainWindow::onProgressEvent);
+    QObject::connect(ui->gainSlider, &QSlider::valueChanged, this, &LiquidMainWindow::onGainValueChanged);
 
     jack_status_t jack_status;
     this->jack_client = jack_client_open ("qliquidsfz", JackNullOption, &jack_status, NULL);
@@ -169,15 +168,7 @@ void LiquidMainWindow::onLoadClicked()
 
     QFileInfo info(this->pendingFilename);
     ui->sfzLoadButton->setText(info.baseName());
-}
-
-void LiquidMainWindow::onCancelClicked()
-{
-    ui->sfzLoadButton->setText(QObject::tr("Load..."));
-    QFileInfo info(this->filename);
-    ui->sfzFileLabel->setText(info.baseName());
-
-    ui->midiChannelSpinBox->setValue(this->channel +1);
+    onCommitClicked();
 }
 
 void LiquidMainWindow::onCommitClicked()
@@ -242,9 +233,9 @@ void LiquidMainWindow::onLoaderFinished()
 void LiquidMainWindow::onHandleNote(bool doHandle)
 {
     if (!doHandle)
-        this->ui->midiChannelLabel->setText("<font color=\"black\">" + QString::number(this->channel +1) + "</font>");
+        this->ui->midiChannelLabel->setText("<font color=\"black\">•</font>");
     else
-        this->ui->midiChannelLabel->setText("<font color=\"red\">" + QString::number(this->channel + 1) + "</font>");
+        this->ui->midiChannelLabel->setText("<font color=\"green\">•</font>");
 }
 
 void LiquidMainWindow::onLogEvent(const QString &message)

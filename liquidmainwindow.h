@@ -33,7 +33,6 @@ protected:
 
 protected slots:
     void onLoadClicked();
-    void onCancelClicked();
     void onCommitClicked();
     void onHelpAbout();
     void onLoaderFinished();
