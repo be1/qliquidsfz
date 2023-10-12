@@ -57,7 +57,7 @@ LiquidMainWindow::LiquidMainWindow(QWidget *parent) :
     QObject::connect(ui->commitButton, SIGNAL(clicked()), this, SLOT(onCommitClicked()));
     QObject::connect(ui->actionAbout, SIGNAL(triggered()), this, SLOT(onHelpAbout()));
     QObject::connect(this, SIGNAL(handleNote(bool)), this, SLOT(onHandleNote(bool)));
-    QObject::connect(this, SIGNAL(logEvent(const QString&)), this, SLOT(onLogEvent(const QString&)));
+    QObject::connect(this, SIGNAL(logEvent(QString)), this, SLOT(onLogEvent(QString)));
     QObject::connect(this, SIGNAL(progressEvent(int)), this, SLOT(onProgressEvent(int)));
     QObject::connect(ui->gainSlider, SIGNAL(valueChanged(int)), this, SLOT(onGainValueChanged(int)));
 
