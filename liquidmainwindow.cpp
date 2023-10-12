@@ -24,7 +24,9 @@ LiquidMainWindow::LiquidMainWindow(QWidget *parent) :
     jack_audio_l(nullptr),
     jack_audio_r(nullptr),
     gain(1.0),
-    _gain(1.0)
+    _gain(1.0),
+    pan(64),
+    _pan(64)
 {
     ui->setupUi(this);
 
@@ -59,9 +61,11 @@ LiquidMainWindow::LiquidMainWindow(QWidget *parent) :
     QObject::connect(this, &LiquidMainWindow::logEvent, this, &LiquidMainWindow::onLogEvent);
     QObject::connect(this, &LiquidMainWindow::progressEvent, this, &LiquidMainWindow::onProgressEvent);
     QObject::connect(ui->gainSlider, &QSlider::valueChanged, this, &LiquidMainWindow::onGainValueChanged);
+    QObject::connect(ui->panSlider, &QSlider::valueChanged, this, &LiquidMainWindow::onPanValueChanged);
 
     jack_status_t jack_status;
     this->jack_client = jack_client_open ("qliquidsfz", JackNullOption, &jack_status, NULL);
+
     if (!this->jack_client) {
         this->ui->statusBar->showMessage("jack_client_open() failed: " + QString::number(jack_status));
         if (jack_status & JackServerFailed) {
@@ -70,6 +74,7 @@ LiquidMainWindow::LiquidMainWindow(QWidget *parent) :
 
         return;
     }
+
     if (jack_status & JackServerStarted) {
         this->ui->statusBar->showMessage("JACK server started");
     }
@@ -136,6 +141,12 @@ int LiquidMainWindow::process(jack_nframes_t nframes)
                 continue;
             }
 
+            /* Pan is CC 10 */
+            if (this->pan != this->_pan) {
+                synth.add_event_cc(in_event.time, channel, 10, this->_pan);
+                this->pan = this->_pan;
+            }
+
             switch (in_event.buffer[0] & 0xf0) {
                 case 0x90: synth.add_event_note_on (in_event.time, channel, in_event.buffer[1], in_event.buffer[2]);
                            emit handleNote(true);
@@ -163,11 +174,10 @@ int LiquidMainWindow::process(jack_nframes_t nframes)
 void LiquidMainWindow::onLoadClicked()
 {
     this->pendingFilename = QFileDialog::getOpenFileName(this, QObject::tr("Open SFZ"), "", QObject::tr("SFZ Files (*.sfz)"));
+
     if (pendingFilename.isEmpty())
         return;
 
-    QFileInfo info(this->pendingFilename);
-    //ui->sfzLoadButton->setText(info.baseName());
     onCommitLoad();
 }
 
@@ -219,6 +229,7 @@ void LiquidMainWindow::onLoaderFinished()
 
     QString message;
     auto ccs = synth.list_ccs();
+
     if (ccs.size()) {
         qDebug() << ccs.size() << "ccs";
         for (const auto& cc_info : ccs) {
@@ -256,5 +267,12 @@ void LiquidMainWindow::onProgressEvent(int progress)
 
 void LiquidMainWindow::onGainValueChanged(int val)
 {
+    ui->gainSlider->setToolTip(QString::number(val));
     this->_gain = (float)val / 100.0;
+}
+
+void LiquidMainWindow::onPanValueChanged(int val)
+{
+    ui->panSlider->setToolTip(QString::number(val));
+    this->_pan = val;
 }

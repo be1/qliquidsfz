@@ -41,6 +41,7 @@ protected slots:
     void onLogEvent(const QString& message);
     void onProgressEvent(int progress);
     void onGainValueChanged(int val);
+    void onPanValueChanged(int val);
 
 private:
     Ui::LiquidMainWindow *ui;
@@ -56,6 +57,7 @@ private:
     jack_port_t* jack_audio_l;
     jack_port_t* jack_audio_r;
     float gain, _gain;
+    int pan, _pan;
 };
 
 #endif // LIQUIDMAINWINDOW_H
