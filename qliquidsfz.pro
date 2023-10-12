@@ -92,7 +92,8 @@ SOURCES += \
 
 HEADERS += \
         liquidmainwindow.h \
-    sfzloader.h
+    sfzloader.h \
+    config.h
 
 FORMS += \
         liquidmainwindow.ui

@@ -208,7 +208,7 @@ void LiquidMainWindow::onCommitClicked()
 
 void LiquidMainWindow::onHelpAbout()
 {
-    QMessageBox::about(this, QObject::tr("About QLiquidSFZ"), "QLiquidSFZ version " VERSION "\n\n"
+    QMessageBox::about(this, QObject::tr("About QLiquidSFZ"), "QLiquidSFZ version " VERSION " (" REVISION ")\n\n"
                                                               "This program is a GUI to the liquidsfz library, an SFZ synth player.\n\n"
                                                               "This program is free software, Copyright (C) Benoit Rouits <brouits@free.fr> "
                                                               "and released under the GNU General Public Lisence version 3. It is delivered "
