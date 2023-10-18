@@ -16,12 +16,6 @@
     <verstretch>0</verstretch>
    </sizepolicy>
   </property>
-  <property name="maximumSize">
-   <size>
-    <width>640</width>
-    <height>480</height>
-   </size>
-  </property>
   <property name="windowTitle">
    <string>LiquidMainWindow</string>
   </property>
@@ -36,12 +30,6 @@
     <size>
      <width>400</width>
      <height>300</height>
-    </size>
-   </property>
-   <property name="maximumSize">
-    <size>
-     <width>640</width>
-     <height>480</height>
     </size>
    </property>
    <layout class="QVBoxLayout" name="verticalLayout">
