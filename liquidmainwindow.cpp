@@ -23,6 +23,7 @@ LiquidMainWindow::LiquidMainWindow(QWidget *parent) :
     jack_midi_in(nullptr),
     jack_audio_l(nullptr),
     jack_audio_r(nullptr),
+    last_on(false),
     gain(1.0),
     _gain(1.0),
     pan(64),
@@ -250,10 +251,17 @@ void LiquidMainWindow::onLoaderFinished()
 
 void LiquidMainWindow::onHandleNote(bool doHandle)
 {
-    if (!doHandle)
-        this->ui->midiChannelLabel->setText("<font color=\"black\">•</font>");
-    else
-        this->ui->midiChannelLabel->setText("<font color=\"green\">•</font>");
+    if (!doHandle) {
+        if (last_on) {
+            this->ui->midiChannelLabel->setText("<font color=\"black\">•</font>");
+            last_on = false;
+        }
+    } else {
+        if (!last_on) {
+            this->ui->midiChannelLabel->setText("<font color=\"green\">•</font>");
+            last_on = true;
+        }
+    }
 }
 
 void LiquidMainWindow::onLogEvent(const QString &message)

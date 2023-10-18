@@ -56,6 +56,7 @@ private:
     jack_port_t* jack_midi_in;
     jack_port_t* jack_audio_l;
     jack_port_t* jack_audio_r;
+    bool last_on; /* last note on or off */
     float gain, _gain;
     int pan, _pan;
 };
