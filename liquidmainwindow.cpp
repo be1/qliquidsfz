@@ -69,14 +69,14 @@ LiquidMainWindow::LiquidMainWindow(QWidget *parent) :
     if (!this->jack_client) {
         this->ui->statusBar->showMessage("jack_client_open() failed: " + QString::number(jack_status));
         if (jack_status & JackServerFailed) {
-            this->ui->statusBar->showMessage("unable to connect to JACK server");
+            this->ui->statusBar->showMessage(QObject::tr("Unable to connect to JACK server"));
         }
 
         return;
     }
 
     if (jack_status & JackServerStarted) {
-        this->ui->statusBar->showMessage("JACK server started");
+        this->ui->statusBar->showMessage(QObject::tr("JACK server started"));
     }
 
     char* name = jack_get_client_name(this->jack_client);
@@ -238,12 +238,13 @@ void LiquidMainWindow::onLoaderFinished()
             if (cc_info.has_label()) {
                 message.append(" - ");
                 message.append(cc_info.label().c_str());
-                message.append("[default: ");
+                message.append(" (");
                 message.append(QString::number(cc_info.default_value()));
-                message.append("]\n");
+                message.append(")\n");
             }
-            emit logEvent(message);
         }
+
+        emit logEvent(message);
     }
 }
 
