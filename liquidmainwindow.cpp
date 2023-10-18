@@ -135,29 +135,29 @@ int LiquidMainWindow::process(jack_nframes_t nframes)
         jack_midi_event_t in_event;
         jack_midi_event_get (&in_event, port_buf, event_index);
         if (in_event.size == 3) {
-            int channel = in_event.buffer[0] & 0x0f;
+            int chan = in_event.buffer[0] & 0x0f;
             /* filter out channels that aren't mine (but keep omni) */
-            if (this->channel && (channel != this->channel)) {
-                emit handleNote(false);
+            if (this->channel && (chan != this->channel)) {
+                synth.all_sound_off();
                 continue;
             }
 
             /* Pan is CC 10 */
             if (this->pan != this->_pan) {
-                synth.add_event_cc(in_event.time, channel, 10, this->_pan);
+                synth.add_event_cc(in_event.time, chan, 10, this->_pan);
                 this->pan = this->_pan;
             }
 
             switch (in_event.buffer[0] & 0xf0) {
-                case 0x90: synth.add_event_note_on (in_event.time, channel, in_event.buffer[1], in_event.buffer[2]);
-                           emit handleNote(true);
+                case 0x90: synth.add_event_note_on (in_event.time, chan, in_event.buffer[1], in_event.buffer[2]);
+                           emit handleNote(true, chan);
                            break;
-                case 0x80: synth.add_event_note_off (in_event.time, channel, in_event.buffer[1]);
-                           emit handleNote(false);
+                case 0x80: synth.add_event_note_off (in_event.time, chan, in_event.buffer[1]);
+                           emit handleNote(false, chan);
                            break;
-                case 0xb0: synth.add_event_cc (in_event.time, channel, in_event.buffer[1], in_event.buffer[2]);
+                case 0xb0: synth.add_event_cc (in_event.time, chan, in_event.buffer[1], in_event.buffer[2]);
                            break;
-                case 0xe0: synth.add_event_pitch_bend (in_event.time, channel, in_event.buffer[1] + 128 * in_event.buffer[2]);
+                case 0xe0: synth.add_event_pitch_bend (in_event.time, chan, in_event.buffer[1] + 128 * in_event.buffer[2]);
                            break;
               }
           }
@@ -249,8 +249,11 @@ void LiquidMainWindow::onLoaderFinished()
     }
 }
 
-void LiquidMainWindow::onHandleNote(bool doHandle)
+void LiquidMainWindow::onHandleNote(bool doHandle, int chan)
 {
+    if (this->channel && chan != this->channel)
+        return;
+
     if (!doHandle) {
         if (last_on) {
             this->ui->midiChannelLabel->setText("<font color=\"black\">•</font>");
