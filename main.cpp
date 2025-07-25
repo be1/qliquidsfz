@@ -16,13 +16,18 @@ int main(int argc, char *argv[])
 
     QString locale = QLocale::system().name();
     QTranslator qtTranslator;
-    qtTranslator.load("qt_" + locale,
+#if QT_VERSION >= QT_VERSION_CHECK(6,0,0)
+    (void) qtTranslator.load("qt_" + locale,
+            QLibraryInfo::path(QLibraryInfo::TranslationsPath));
+#else
+    (void) qtTranslator.load("qt_" + locale,
             QLibraryInfo::location(QLibraryInfo::TranslationsPath));
+#endif
     a.installTranslator(&qtTranslator);
 
     QTranslator qliquidsfzTranslator;
     if (!qliquidsfzTranslator.load(TARGET "_" + locale, "locale"))
-        qliquidsfzTranslator.load(TARGET "_" + locale, DATADIR "/" TARGET "/locale" );
+        (void) qliquidsfzTranslator.load(TARGET "_" + locale, DATADIR "/" TARGET "/locale" );
     a.installTranslator(&qliquidsfzTranslator);
 
 
