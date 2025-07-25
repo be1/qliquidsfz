@@ -32,7 +32,7 @@ protected:
     int process(jack_nframes_t nframes);
 
 protected slots:
-    void onLoadClicked();
+    void onLoadTriggered();
     void onCommitChan();
     void onCommitLoad();
     void onHelpAbout();

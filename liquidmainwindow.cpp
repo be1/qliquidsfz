@@ -55,8 +55,8 @@ LiquidMainWindow::LiquidMainWindow(QWidget *parent) :
         emit progressEvent((int)percent);
     });
 
-    QObject::connect(ui->sfzLoadButton, &QPushButton::clicked, this, &LiquidMainWindow::onLoadClicked);
     QObject::connect(ui->midiChannelSpinBox, &QSpinBox::textChanged, this, &LiquidMainWindow::onCommitChan);
+    QObject::connect(ui->actionLoad, &QAction::triggered, this, &LiquidMainWindow::onLoadTriggered);
     QObject::connect(ui->actionAbout, &QAction::triggered, this, &LiquidMainWindow::onHelpAbout);
     QObject::connect(this, &LiquidMainWindow::handleNote, this, &LiquidMainWindow::onHandleNote);
     QObject::connect(this, &LiquidMainWindow::logEvent, this, &LiquidMainWindow::onLogEvent);
@@ -113,7 +113,7 @@ void LiquidMainWindow::loadFile(const QString &filename)
 {
     this->pendingFilename = filename;
     QFileInfo info(filename);
-    ui->sfzLoadButton->setText(info.baseName());
+    ui->actionLoad->setText(info.baseName());
     onCommitLoad();
 }
 
@@ -172,7 +172,7 @@ int LiquidMainWindow::process(jack_nframes_t nframes)
       return 0;
 }
 
-void LiquidMainWindow::onLoadClicked()
+void LiquidMainWindow::onLoadTriggered()
 {
     this->pendingFilename = QFileDialog::getOpenFileName(this, QObject::tr("Open SFZ"), "", QObject::tr("SFZ Files (*.sfz)"));
 
@@ -198,7 +198,7 @@ void LiquidMainWindow::onCommitLoad()
 
     // load SFZ file in a separate thread.
     if (this->filename != this->pendingFilename) {
-        ui->sfzLoadButton->setEnabled(false);
+        ui->actionLoad->setEnabled(false);
         this->loader = new SFZLoader(&this->synth, &this->mutex, this);
         QObject::connect(this->loader, SIGNAL(finished()), this, SLOT(onLoaderFinished()));
 
@@ -206,7 +206,7 @@ void LiquidMainWindow::onCommitLoad()
         this->loader->setSFZ(this->filename);
         this->loader->start();
 
-        ui->sfzLoadButton->setText(QObject::tr("Load..."));
+        ui->actionLoad->setText(QObject::tr("Load..."));
         QFileInfo info(this->filename);
         ui->sfzFileLabel->setText(info.baseName());
     }
@@ -226,7 +226,7 @@ void LiquidMainWindow::onLoaderFinished()
     this->loader->deleteLater();
     this->ui->statusBar->showMessage(QObject::tr("SFZ loaded"));
 
-    ui->sfzLoadButton->setEnabled(true);
+    ui->actionLoad->setEnabled(true);
 
     QString message;
     auto ccs = synth.list_ccs();

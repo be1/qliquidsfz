@@ -87,13 +87,6 @@
             </property>
            </spacer>
           </item>
-          <item>
-           <widget class="QPushButton" name="sfzLoadButton">
-            <property name="text">
-             <string>Load...</string>
-            </property>
-           </widget>
-          </item>
          </layout>
         </item>
         <item>
@@ -181,6 +174,7 @@
     <property name="title">
      <string>File</string>
     </property>
+    <addaction name="actionLoad"/>
     <addaction name="actionQuit"/>
    </widget>
    <widget class="QMenu" name="menuHelp">
@@ -205,16 +199,34 @@
    <attribute name="toolBarBreak">
     <bool>false</bool>
    </attribute>
+   <addaction name="actionLoad"/>
   </widget>
   <widget class="QStatusBar" name="statusBar"/>
-  <action name="actionQuit">
+  <action name="actionLoad">
+   <property name="icon">
+    <iconset theme="folder-open"/>
+   </property>
    <property name="text">
-    <string>Quit</string>
+    <string>Load...</string>
    </property>
   </action>
   <action name="actionAbout">
    <property name="text">
     <string>About</string>
+   </property>
+   <property name="menuRole">
+    <enum>QAction::MenuRole::AboutRole</enum>
+   </property>
+  </action>
+  <action name="actionQuit">
+   <property name="icon">
+    <iconset theme="application-exit"/>
+   </property>
+   <property name="text">
+    <string>Quit</string>
+   </property>
+   <property name="menuRole">
+    <enum>QAction::MenuRole::QuitRole</enum>
    </property>
   </action>
  </widget>
