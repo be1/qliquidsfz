@@ -33,6 +33,7 @@ protected:
 
 protected slots:
     void onLoadTriggered();
+    void onClearLogTriggered();
     void onCommitChan();
     void onCommitLoad();
     void onHelpAbout();

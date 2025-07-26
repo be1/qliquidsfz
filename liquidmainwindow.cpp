@@ -57,6 +57,7 @@ LiquidMainWindow::LiquidMainWindow(QWidget *parent) :
 
     QObject::connect(ui->midiChannelSpinBox, &QSpinBox::textChanged, this, &LiquidMainWindow::onCommitChan);
     QObject::connect(ui->actionLoad, &QAction::triggered, this, &LiquidMainWindow::onLoadTriggered);
+    QObject::connect(ui->actionClearLog, &QAction::triggered, this, &LiquidMainWindow::onClearLogTriggered);
     QObject::connect(ui->actionAbout, &QAction::triggered, this, &LiquidMainWindow::onHelpAbout);
     QObject::connect(this, &LiquidMainWindow::handleNote, this, &LiquidMainWindow::onHandleNote);
     QObject::connect(this, &LiquidMainWindow::logEvent, this, &LiquidMainWindow::onLogEvent);
@@ -170,6 +171,11 @@ int LiquidMainWindow::process(jack_nframes_t nframes)
       synth.process (outputs, nframes);
       this->mutex.unlock();
       return 0;
+}
+
+void LiquidMainWindow::onClearLogTriggered()
+{
+    ui->logTextEdit->clear();
 }
 
 void LiquidMainWindow::onLoadTriggered()
