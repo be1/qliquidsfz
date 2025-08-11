@@ -42,7 +42,6 @@ protected slots:
     void onLogEvent(const QString& message);
     void onProgressEvent(int progress);
     void onGainValueChanged(int val);
-    void onPanValueChanged(int val);
 
 private:
     Ui::LiquidMainWindow *ui;
@@ -52,6 +51,7 @@ private:
     QMutex mutex;
     LiquidSFZ::Synth synth;
     SFZLoader* loader;
+    QQueue<QPair<int, int>>* cc_queue;
 
     jack_client_t* jack_client;
     jack_port_t* jack_midi_in;
@@ -59,7 +59,6 @@ private:
     jack_port_t* jack_audio_r;
     bool last_on; /* last note on or off */
     float gain, _gain;
-    int pan, _pan;
 };
 
 #endif // LIQUIDMAINWINDOW_H

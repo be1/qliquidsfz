@@ -4,12 +4,14 @@
 #include <QFileDialog>
 #include <QMessageBox>
 #include <QSocketNotifier>
+#include <QQueue>
 #include <QDebug>
 #include <liquidsfz.hh>
 #include <jack/jack.h>
 #include <unistd.h>
 #include <sys/ioctl.h>
 #include <alloca.h>
+#include "knob.h"
 #include "config.h"
 
 LiquidMainWindow::LiquidMainWindow(QWidget *parent) :
@@ -26,8 +28,7 @@ LiquidMainWindow::LiquidMainWindow(QWidget *parent) :
     last_on(false),
     gain(1.0),
     _gain(1.0),
-    pan(64),
-    _pan(64)
+    cc_queue(new QQueue<QPair<int, int>>)
 {
     ui->setupUi(this);
 
@@ -63,7 +64,6 @@ LiquidMainWindow::LiquidMainWindow(QWidget *parent) :
     QObject::connect(this, &LiquidMainWindow::logEvent, this, &LiquidMainWindow::onLogEvent);
     QObject::connect(this, &LiquidMainWindow::progressEvent, this, &LiquidMainWindow::onProgressEvent);
     QObject::connect(ui->gainSlider, &QSlider::valueChanged, this, &LiquidMainWindow::onGainValueChanged);
-    QObject::connect(ui->panSlider, &QSlider::valueChanged, this, &LiquidMainWindow::onPanValueChanged);
 
     jack_status_t jack_status;
     this->jack_client = jack_client_open ("qliquidsfz", JackNullOption, &jack_status, NULL);
@@ -143,10 +143,9 @@ int LiquidMainWindow::process(jack_nframes_t nframes)
                 continue;
             }
 
-            /* Pan is CC 10 */
-            if (this->pan != this->_pan) {
-                synth.add_event_cc(in_event.time, chan, 10, this->_pan);
-                this->pan = this->_pan;
+            if (!this->cc_queue->isEmpty()) {
+                QPair<int, int> cc = cc_queue->dequeue();
+                synth.add_event_cc(in_event.time, chan, cc.first, cc.second);
             }
 
             switch (in_event.buffer[0] & 0xf0) {
@@ -238,7 +237,6 @@ void LiquidMainWindow::onLoaderFinished()
     auto ccs = synth.list_ccs();
 
     if (ccs.size()) {
-        qDebug() << ccs.size() << "ccs";
         for (const auto& cc_info : ccs) {
             message.append(" • CC #%1");
             message = message.arg(cc_info.cc());
@@ -249,6 +247,10 @@ void LiquidMainWindow::onLoaderFinished()
                 message.append(QString::number(cc_info.default_value()));
                 message.append(")\n");
             }
+
+            QHBoxLayout* knobs = ui->knobHorizontalLayout;
+            Knob* knob = new Knob(cc_queue, cc_info, this);
+            knobs->addLayout(knob);
         }
 
         emit logEvent(message);
@@ -287,10 +289,4 @@ void LiquidMainWindow::onGainValueChanged(int val)
 {
     ui->gainSlider->setToolTip(QString::number(val));
     this->_gain = (float)val / 100.0;
-}
-
-void LiquidMainWindow::onPanValueChanged(int val)
-{
-    ui->panSlider->setToolTip(QString::number(val));
-    this->_pan = val;
 }

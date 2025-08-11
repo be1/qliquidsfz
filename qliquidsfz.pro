@@ -86,11 +86,13 @@ DEFINES += QT_DEPRECATED_WARNINGS
 
 
 SOURCES += \
+    knob.cpp \
         main.cpp \
         liquidmainwindow.cpp \
     sfzloader.cpp
 
 HEADERS += \
+    knob.h \
         liquidmainwindow.h \
     sfzloader.h \
     config.h
