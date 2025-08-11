@@ -3,8 +3,8 @@
 
 Knob::Knob(QQueue<QPair<int, int>>* cc_queue, const LiquidSFZ::CCInfo& cc_info, QWidget *parent): QVBoxLayout(parent)
 {
-    this->queue = cc_queue;
-    this->cc = cc_info.cc();
+    this->_queue = cc_queue;
+    this->_cc = cc_info.cc();
 
     setAlignment(Qt::AlignHCenter);
 
@@ -28,5 +28,10 @@ Knob::Knob(QQueue<QPair<int, int>>* cc_queue, const LiquidSFZ::CCInfo& cc_info, 
 }
 
 void Knob::onValueChanged(int val) {
-    queue->enqueue(QPair<int, int>(cc, val));
+    _queue->enqueue(QPair<int, int>(_cc, val));
+}
+
+void Knob::setValue(int val) {
+    QDial* dial = static_cast<QDial*>(itemAt(0)->widget());
+    dial->setValue(val);
 }

@@ -61,6 +61,7 @@ LiquidMainWindow::LiquidMainWindow(QWidget *parent) :
     QObject::connect(ui->actionClearLog, &QAction::triggered, this, &LiquidMainWindow::onClearLogTriggered);
     QObject::connect(ui->actionAbout, &QAction::triggered, this, &LiquidMainWindow::onHelpAbout);
     QObject::connect(this, &LiquidMainWindow::handleNote, this, &LiquidMainWindow::onHandleNote);
+    QObject::connect(this, &LiquidMainWindow::handleCC, this, &LiquidMainWindow::onHandleCC);
     QObject::connect(this, &LiquidMainWindow::logEvent, this, &LiquidMainWindow::onLogEvent);
     QObject::connect(this, &LiquidMainWindow::progressEvent, this, &LiquidMainWindow::onProgressEvent);
     QObject::connect(ui->gainSlider, &QSlider::valueChanged, this, &LiquidMainWindow::onGainValueChanged);
@@ -143,11 +144,13 @@ int LiquidMainWindow::process(jack_nframes_t nframes)
                 continue;
             }
 
+            /* GUI CCs */
             if (!this->cc_queue->isEmpty()) {
                 QPair<int, int> cc = cc_queue->dequeue();
                 synth.add_event_cc(in_event.time, chan, cc.first, cc.second);
             }
 
+            /* Input CCs */
             switch (in_event.buffer[0] & 0xf0) {
                 case 0x90: synth.add_event_note_on (in_event.time, chan, in_event.buffer[1], in_event.buffer[2]);
                            emit handleNote(true, chan);
@@ -156,6 +159,7 @@ int LiquidMainWindow::process(jack_nframes_t nframes)
                            emit handleNote(false, chan);
                            break;
                 case 0xb0: synth.add_event_cc (in_event.time, chan, in_event.buffer[1], in_event.buffer[2]);
+                           emit handleCC(in_event.buffer[1], in_event.buffer[2]);
                            break;
                 case 0xe0: synth.add_event_pitch_bend (in_event.time, chan, in_event.buffer[1] + 128 * in_event.buffer[2]);
                            break;
@@ -257,12 +261,12 @@ void LiquidMainWindow::onLoaderFinished()
     }
 }
 
-void LiquidMainWindow::onHandleNote(bool doHandle, int chan)
+void LiquidMainWindow::onHandleNote(bool on, int chan)
 {
     if (this->channel && chan != this->channel)
         return;
 
-    if (!doHandle) {
+    if (!on) {
         if (last_on) {
             this->ui->midiChannelLabel->setText("<font color=\"black\">•</font>");
             last_on = false;
@@ -271,6 +275,21 @@ void LiquidMainWindow::onHandleNote(bool doHandle, int chan)
         if (!last_on) {
             this->ui->midiChannelLabel->setText("<font color=\"green\">•</font>");
             last_on = true;
+        }
+    }
+}
+
+void LiquidMainWindow::onHandleCC(int cc, int val)
+{
+    QHBoxLayout* knobs = ui->knobHorizontalLayout;
+    for (int i = 0; i <= 127; i++) {
+        Knob* knob = dynamic_cast<Knob*>(knobs->layout()->itemAt(i));
+        if (knob == nullptr)
+            break;
+
+        if (knob->cc() == cc) {
+            knob->setValue(val);
+            break;
         }
     }
 }

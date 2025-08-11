@@ -27,6 +27,7 @@ signals:
     void logEvent(const QString&);
     void progressEvent(int percent);
     void handleNote(bool doHandle, int chan);
+    void handleCC(int cc, int val);
 
 protected:
     int process(jack_nframes_t nframes);
@@ -39,6 +40,7 @@ protected slots:
     void onHelpAbout();
     void onLoaderFinished();
     void onHandleNote(bool on, int chan);
+    void onHandleCC(int cc, int val);
     void onLogEvent(const QString& message);
     void onProgressEvent(int progress);
     void onGainValueChanged(int val);
