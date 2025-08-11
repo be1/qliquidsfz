@@ -28,5 +28,5 @@ Knob::Knob(QQueue<QPair<int, int>>* cc_queue, const LiquidSFZ::CCInfo& cc_info, 
 }
 
 void Knob::onValueChanged(int val) {
-    queue->enqueue(QPair(cc, val));
+    queue->enqueue(QPair<int, int>(cc, val));
 }

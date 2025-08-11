@@ -44,7 +44,7 @@ QMAKE_EXTRA_COMPILERS += updateqm
 
 unix {
     MANPAGE = "qliquidsfz.1"
-    manpage.input = MANPAGE
+    manpage.input = ${QMAKE_FILE_OUT}/$$MANPAGE
     manpage.output = $${MANPAGE}.gz
     manpage.commands = gzip --to-stdout ${QMAKE_FILE_IN} > ${QMAKE_FILE_OUT}
     manpage.CONFIG += no_link target_predeps

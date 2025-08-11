@@ -21,14 +21,14 @@ LiquidMainWindow::LiquidMainWindow(QWidget *parent) :
     pendingFilename(""),
     channel(0),
     loader(nullptr),
+    cc_queue(new QQueue<QPair<int, int>>),
     jack_client(nullptr),
     jack_midi_in(nullptr),
     jack_audio_l(nullptr),
     jack_audio_r(nullptr),
     last_on(false),
     gain(1.0),
-    _gain(1.0),
-    cc_queue(new QQueue<QPair<int, int>>)
+    _gain(1.0)
 {
     ui->setupUi(this);
 
