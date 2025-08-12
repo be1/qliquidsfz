@@ -44,7 +44,7 @@ QMAKE_EXTRA_COMPILERS += updateqm
 
 unix {
     MANPAGE = "qliquidsfz.1"
-    manpage.input = ${QMAKE_FILE_OUT}/$$MANPAGE
+    manpage.input = MANPAGE
     manpage.output = $${MANPAGE}.gz
     manpage.commands = gzip --to-stdout ${QMAKE_FILE_IN} > ${QMAKE_FILE_OUT}
     manpage.CONFIG += no_link target_predeps
@@ -54,7 +54,7 @@ unix {
 unix {
     target.path = $$BINDIR
     manual.path = $$DATADIR/man/man1
-    manual.files = $${MANPAGE}.gz
+    manual.files = $$OUT_PWD/$${MANPAGE}.gz
     manual.CONFIG = no_check_exist
     translations.path = $$DATADIR/$${TARGET}
     translations.files = $${LOCALE_DIR}
