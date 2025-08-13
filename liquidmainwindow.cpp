@@ -145,7 +145,7 @@ int LiquidMainWindow::process(jack_nframes_t nframes)
             }
 
             /* GUI CCs */
-            if (!this->cc_queue->isEmpty()) {
+            while (!this->cc_queue->isEmpty()) {
                 QPair<int, int> cc = cc_queue->dequeue();
                 synth.add_event_cc(in_event.time, chan, cc.first, cc.second);
             }
@@ -284,12 +284,11 @@ void LiquidMainWindow::onHandleCC(int cc, int val)
     QHBoxLayout* knobs = ui->knobHorizontalLayout;
     for (int i = 0; i <= 127; i++) {
         Knob* knob = dynamic_cast<Knob*>(knobs->layout()->itemAt(i));
-        if (knob == nullptr)
-            break;
-
-        if (knob->cc() == cc) {
-            knob->setValue(val);
-            break;
+        if (knob != nullptr) {
+            if (knob->cc() == cc) {
+                knob->setValue(val);
+                break;
+            }
         }
     }
 }
