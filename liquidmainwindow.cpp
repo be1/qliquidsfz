@@ -205,6 +205,15 @@ void LiquidMainWindow::onCommitLoad()
     // clear log area
     ui->logTextEdit->clear();
 
+    // clear knobs
+    QHBoxLayout* knobs = ui->knobHorizontalLayout;
+    for (int i = 0; i < knobs->children().size(); i++) {
+        Knob* knob = static_cast<Knob*>(knobs->children().at(i));
+        qDebug() << knob;
+        knobs->removeItem(knob);
+        i--;
+    }
+
     // load SFZ file in a separate thread.
     if (this->filename != this->pendingFilename) {
         ui->actionLoad->setEnabled(false);
@@ -282,13 +291,11 @@ void LiquidMainWindow::onHandleNote(bool on, int chan)
 void LiquidMainWindow::onHandleCC(int cc, int val)
 {
     QHBoxLayout* knobs = ui->knobHorizontalLayout;
-    for (int i = 0; i <= 127; i++) {
-        Knob* knob = dynamic_cast<Knob*>(knobs->layout()->itemAt(i));
-        if (knob != nullptr) {
-            if (knob->cc() == cc) {
-                knob->setValue(val);
-                break;
-            }
+    for (int i = 0; i <= knobs->children().size(); i++) {
+        Knob* knob = static_cast<Knob*>(knobs->children().at(i));
+        if (knob->cc() == cc) {
+            knob->setValue(val);
+            break;
         }
     }
 }
