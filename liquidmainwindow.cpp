@@ -205,18 +205,20 @@ void LiquidMainWindow::onCommitLoad()
     // clear log area
     ui->logTextEdit->clear();
 
-    // clear knobs
-    QHBoxLayout* knobs = ui->knobHorizontalLayout;
-    for (int i = 0; i < knobs->children().size(); i++) {
-        Knob* knob = static_cast<Knob*>(knobs->children().at(i));
-        qDebug() << knob;
-        knobs->removeItem(knob);
-        i--;
-    }
-
     // load SFZ file in a separate thread.
     if (this->filename != this->pendingFilename) {
         ui->actionLoad->setEnabled(false);
+
+        // clear knobs if any
+        QHBoxLayout* knobs = ui->knobHorizontalLayout;
+        qDebug() << "removing" << knobs->children().size() << "knob(s)";
+        while (QLayoutItem* item = knobs->takeAt(0)) {
+            if (QLayout* childLayout = item->layout()) {
+                Knob* knob = static_cast<Knob*>(childLayout);
+                delete knob;
+            }
+        }
+
         this->loader = new SFZLoader(&this->synth, &this->mutex, this);
         QObject::connect(this->loader, SIGNAL(finished()), this, SLOT(onLoaderFinished()));
 
@@ -249,6 +251,7 @@ void LiquidMainWindow::onLoaderFinished()
     QString message;
     auto ccs = synth.list_ccs();
 
+    qDebug () << "adding" << ccs.size() << "knob(s)";
     if (ccs.size()) {
         for (const auto& cc_info : ccs) {
             message.append(" • CC #%1");
@@ -291,7 +294,7 @@ void LiquidMainWindow::onHandleNote(bool on, int chan)
 void LiquidMainWindow::onHandleCC(int cc, int val)
 {
     QHBoxLayout* knobs = ui->knobHorizontalLayout;
-    for (int i = 0; i <= knobs->children().size(); i++) {
+    for (int i = 0; i < knobs->children().size(); i++) {
         Knob* knob = static_cast<Knob*>(knobs->children().at(i));
         if (knob->cc() == cc) {
             knob->setValue(val);

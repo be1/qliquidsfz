@@ -35,3 +35,11 @@ void Knob::setValue(int val) {
     QDial* dial = static_cast<QDial*>(itemAt(0)->widget());
     dial->setValue(val);
 }
+
+Knob::~Knob() {
+    QDial* dial = static_cast<QDial*>(itemAt(0)->widget());
+    QLabel* label = static_cast<QLabel*>(itemAt(1)->widget());
+
+    delete dial;
+    delete label;
+}

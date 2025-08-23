@@ -12,7 +12,8 @@ class Knob : public QVBoxLayout
     Q_OBJECT
 public:
     Knob(QQueue<QPair<int, int>>* cc_queue, const LiquidSFZ::CCInfo &cc_info, QWidget* parent = nullptr);
-    int cc() { return _cc; };
+    ~Knob();
+    int cc() { return _cc; }
     void setValue(int val);
 
 protected slots:
