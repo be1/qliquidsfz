@@ -131,9 +131,10 @@ int LiquidMainWindow::process(jack_nframes_t nframes)
     }
 
     /* GUI CCs must be checked even when no MIDI event from jack */
-    while (!this->cc_queue->isEmpty()) {
+    int i = 0;
+    while (!this->cc_queue->isEmpty() && i < nframes) {
         QPair<int, int> cc = cc_queue->dequeue();
-        synth.add_event_cc(0, this->channel, cc.first, cc.second);
+        synth.add_event_cc(i++, this->channel, cc.first, cc.second);
     }
 
     void* port_buf = jack_port_get_buffer (this->jack_midi_in, nframes);
