@@ -13,3 +13,4 @@ Icon=qliquidsfz
 Terminal=false
 Type=Application
 Categories=AudioVideo;
+MimeType=application/x-sfz;

@@ -8,7 +8,7 @@ QT        += core gui
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
-VERSION = 0.1.4
+VERSION = 0.1.5
 REVISION = $$system(git describe --long --tags 2>/dev/null || echo "stable")
 TARGET = qliquidsfz
 TEMPLATE = app
